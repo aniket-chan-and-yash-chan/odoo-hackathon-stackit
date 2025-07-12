@@ -1,24 +1,27 @@
 import { useState, useEffect } from 'react';
+import { Link } from "react-router-dom";
 
-function QuestionCard({ title, description, tags, username, answers = 0 }) {
+function QuestionCard({ id, title, description, tags, username, answers = 0 }) {
   return (
-    <div className="card bg-dark text-light mb-3 border-secondary">
-      <div className="card-body d-flex justify-content-between">
-        <div>
-          <h5>{title}</h5>
-          <div className="mb-2">
-            {tags.split(',').map((tag, i) => (
-              <span key={i} className="badge bg-secondary me-1">{tag.trim()}</span>
-            ))}
+    <Link to={`/question/${id}`} className="text-decoration-none text-light">
+      <div className="card bg-dark text-light mb-3 border-secondary">
+        <div className="card-body d-flex justify-content-between">
+          <div>
+            <h5>{title}</h5>
+            <div className="mb-2">
+              {tags.split(',').map((tag, i) => (
+                <span key={i} className="badge bg-secondary me-1">{tag.trim()}</span>
+              ))}
+            </div>
+            <p>{description}</p>
+            <small>Posted by: {username || 'Anonymous'}</small>
           </div>
-          <p>{description}</p>
-          <small>Posted by: {username || 'Anonymous'}</small>
-        </div>
-        <div>
-          <span className="badge bg-info">{answers} ans</span>
+          <div>
+            <span className="badge bg-info">{answers} ans</span>
+          </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
 
