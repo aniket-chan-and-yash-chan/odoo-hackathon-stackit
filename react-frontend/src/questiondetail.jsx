@@ -5,7 +5,7 @@ export default function QuestionDetail() {
       const { id: postId } = useParams(); 
       
       useEffect(() => {
-          fetch(`https://odoo-hackathon-stackit.onrender.com/api/answers/${postId}`)
+          fetch(`http://localhost:5001/api/answers/${postId}`)
           .then(res => res.json())
           .then(data => setAnswers(data));
         }, [postId]);
@@ -13,7 +13,7 @@ export default function QuestionDetail() {
         const [answers, setAnswers] = useState([]);
         const [newAnswer, setNewAnswer] = useState("");
   const submitAnswer = async () => {
-    const res = await fetch("https://odoo-hackathon-stackit.onrender.com/api/answer", {
+    const res = await fetch("http://localhost:5001/api/answer", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -25,7 +25,7 @@ export default function QuestionDetail() {
 
     if (res.ok) {
       setNewAnswer("");
-      const updated = await fetch(`https://odoo-hackathon-stackit.onrender.com/api/answers/${postId}`).then(res => res.json());
+      const updated = await fetch(`http://localhost:5001/api/answers/${postId}`).then(res => res.json());
       setAnswers(updated);
     }
   };

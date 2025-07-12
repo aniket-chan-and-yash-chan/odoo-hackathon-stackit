@@ -159,7 +159,7 @@ function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const res = await fetch("https://odoo-hackathon-stackit.onrender.com/api/login", {
+    const res = await fetch("http://localhost:5001/api/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -234,7 +234,7 @@ function SignUpPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const res = await fetch("https://odoo-hackathon-stackit.onrender.com/api/signup", {
+    const res = await fetch("http://localhost:5001/api/signup", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
