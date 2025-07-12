@@ -25,23 +25,34 @@ from flask import send_from_directory
 def get_questions():
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', 5, type=int)
-    query = Post.query.paginate(page=page, per_page=per_page)
+    search = request.args.get('search', '', type=str)
+
+    query = Post.query
+
+    if search:
+        query = query.filter(
+            Post.title.ilike(f"%{search}%") |
+            Post.tags.ilike(f"%{search}%")
+        )
+
+    paginated = query.paginate(page=page, per_page=per_page)
     questions = [
         {
             "id": post.id,
             "title": post.title,
             "description": post.description,
             "tags": post.tags,
-            "username": "Anonymous",  # Update later when linking users
-            "answers": 0  # Add later when answers are implemented
+            "username": "Anonymous",
+            "answers": 0
         }
-        for post in query.items
+        for post in paginated.items
     ]
+
     return jsonify({
         "questions": questions,
-        "total": query.total,
-        "pages": query.pages,
-        "current_page": query.page
+        "total": paginated.total,
+        "pages": paginated.pages,
+        "current_page": paginated.page
     })
 
 class Post(db.Model):

@@ -27,10 +27,6 @@ function TopBar() {
         </div>
 
         {/* Right Section (Search Bar) */}
-        <form className="d-flex gap-2" role="search">
-          <input className="form-control" type="search" placeholder="Search" aria-label="Search" />
-          <button className="btn btn-outline-light" type="submit">🔍</button>
-        </form>
       </div>
     </div>
   );
