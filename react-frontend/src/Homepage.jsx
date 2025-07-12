@@ -32,7 +32,7 @@ export default function Homepage() {
   const [search, setSearch] = useState("");
 
   const fetchQuestions = () => {
-    fetch(`http://localhost:5001/api/questions?page=${page}&per_page=5&search=${encodeURIComponent(search)}`)
+    fetch(`https://odoo-hackathon-stackit.onrender.com/api/questions?page=${page}&per_page=5&search=${encodeURIComponent(search)}`)
       .then(res => res.json())
       .then(data => {
         setQuestions(data.questions);

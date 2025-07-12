@@ -7,7 +7,7 @@ export default function AskPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await fetch('http://127.0.0.1:5001/api/post', {
+    const response = await fetch('https://odoo-hackathon-stackit.onrender.com/api/post', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
