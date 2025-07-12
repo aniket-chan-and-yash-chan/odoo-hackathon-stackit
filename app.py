@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, request, jsonify, send_from_directory
+from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import random
@@ -11,9 +12,16 @@ user_email_username_password_length = 100
 sessionid_length = 30
 
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='./react-frontend/dist', static_url_path='')
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///stackit.db'  # configure db
 db = SQLAlchemy(app) # connecting flask and db
+CORS(app)
+
+
+from flask import send_from_directory
+
+
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)  # Making format for db in which it will save things
@@ -31,36 +39,46 @@ class Users(db.Model):
 with app.app_context(): # creates db 
     db.create_all()
 
-@app.route("/login", methods=["POST"]) # For login
+@app.route("/api/login", methods=["POST"])
 def user_login():
-    data=request.get_json()
-    user_email = data["email"]
-    user_password = data["password"]
-    user_sessionid = ''.join(random.choices(string.ascii_letters + string.digits, k=sessionid_length)) # Random session-id generated
-    if len(user_email)<user_email_username_password_length and len(user_password)<user_email_username_password_length:
-        login_user = Users(email=user_email, password=user_password, sessionid=user_sessionid)
-        db.session.add(login_user)
-        db.session.commit() # commits entry in db
-        return "User created"
+    data = request.get_json()
+    if not data:
+        return "error: invalid json", 400
+
+    user_email = data.get("email")
+    user_password = data.get("password")
+
+    if not user_email or not user_password:
+        return "error: missing email or password", 400
+
+    user = Users.query.filter_by(email=user_email, password=user_password).first()
+    if user:
+        return "asjdfhlkashdfkjl",200
     else:
-        return "error: User not created"
-    
-@app.route("/signup", methods=["POST"]) # For signup
+        return "error: invalid credentials", 401
+
+
+
+@app.route("/api/signup", methods=["POST"])
 def user_signup():
     data = request.get_json()
-    user_email = data["email"]
-    user_username = data["username"]
-    user_password = data["password"]
-    print(user_email + " " + user_password)
-    if len(user_email)<user_email_username_password_length and len(user_password)<user_email_username_password_length and len(user_username)<user_email_username_password_length:
-        new_user = Users(email=user_email, password=user_password, username = user_username)
-        db.session.add(new_user)
-        db.session.commit() # commits entry in db
-        return "User created"
-    else:
-        return "error: User not created"
+    if not data:
+        return "error: invalid json", 400
 
-@app.route("/post", methods=["POST"]) # For posting
+    user_email = data.get("email")
+    user_username = data.get("username")
+    user_password = data.get("password")
+
+    if not all([user_email, user_username, user_password]):
+        return "error: missing fields", 400
+
+    new_user = Users(email=user_email, password=user_password, username=user_username)
+    db.session.add(new_user)
+    db.session.commit()
+
+    return "User created", 201
+
+@app.route("/api/post", methods=["POST"]) # For posting
 def post_user():
     if request.method == 'POST':
         data = request.get_json()
@@ -81,10 +99,7 @@ def post_user():
         cards = Post.query.all() # otherwise shows all
     return render_template('index.html/post', cards = cards)
     
-@app.route("/")
-def home():
-    return render_template('index.html')
-    
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
