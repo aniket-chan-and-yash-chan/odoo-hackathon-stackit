@@ -5,6 +5,7 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import {React,useState} from 'react';
 import AskPage from './askpage';
 import Homepage from './Homepage';
+import QuestionDetail from './questiondetail';
 
 
 
@@ -23,23 +24,6 @@ function TopBar() {
 
           <Link to="/askpage" className="btn btn-primary">Ask New Question</Link>
           )}
-
-          <div className="dropdown">
-            <button
-              className="btn btn-outline-light dropdown-toggle"
-              type="button"
-              id="dropdownMenuButton"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              More
-            </button>
-            <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <li><button className="dropdown-item" type="button">Hot</button></li>
-              <li><button className="dropdown-item" type="button">Active</button></li>
-              <li><button className="dropdown-item" type="button">Bountied</button></li>
-            </ul>
-          </div>
         </div>
 
         {/* Right Section (Search Bar) */}
@@ -139,6 +123,7 @@ function AskQuestionPage() {
   );
 }
 
+
 function Navbar() {
   const isLoggedIn = localStorage.getItem("sessionId") !== null;
   return (
@@ -155,6 +140,11 @@ function Navbar() {
             <div className="d-flex gap-2">
               <Link to="/login" className="btn btn-outline-light">Login</Link>
               <Link to="/signup" className="btn btn-primary">Sign Up</Link>
+            </div>
+          )}
+          {isLoggedIn && (
+            <div className="d-flex gap-2">
+              <Link to="/profile" className="btn btn-outline-light">profile</Link>
             </div>
           )}
         </div>
@@ -314,6 +304,7 @@ function App() {
       <Route path="/signup" element={<SignUpPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/askpage" element={<AskPage />} />
+      <Route path="/question/:id" element={<QuestionDetail />} />
     </Routes>
     </>
   );
