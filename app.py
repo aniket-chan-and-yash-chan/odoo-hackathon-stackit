@@ -57,6 +57,13 @@ class Users(db.Model):
     password = db.Column(db.String(user_email_username_password_length), nullable=False)
     sessionid = db.Column(db.String(sessionid_length), nullable=True)
 
+class Answer(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.Text, nullable=False)
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
+    username = db.Column(db.String(user_email_username_password_length), nullable=True)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
 with app.app_context(): # creates db 
     db.create_all()
 
@@ -79,6 +86,17 @@ def user_login():
         return "error: invalid credentials", 401
 
 
+@app.route("/api/answers/<int:post_id>")
+def get_answers(post_id):
+    answers = Answer.query.filter_by(post_id=post_id).order_by(Answer.timestamp.desc()).all()
+    return jsonify([
+        {
+            "id": a.id,
+            "content": a.content,
+            "username": a.username,
+            "timestamp": a.timestamp.isoformat()
+        } for a in answers
+    ])
 
 @app.route("/api/signup", methods=["POST"])
 def user_signup():
@@ -120,6 +138,20 @@ def post_user():
         cards = Post.query.all() # otherwise shows all
     return render_template('index.html/post', cards = cards)
     
+@app.route("/api/answer", methods=["POST"])
+def post_answer():
+    data = request.get_json()
+    content = data.get("content")
+    post_id = data.get("post_id")
+    username = data.get("username", "Anonymous")
+
+    if not content or not post_id:
+        return "Missing content or post_id", 400
+
+    new_answer = Answer(content=content, post_id=post_id, username=username)
+    db.session.add(new_answer)
+    db.session.commit()
+    return "Answer added", 201
 
 
 if __name__ == '__main__':

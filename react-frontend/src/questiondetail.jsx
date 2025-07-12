@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
-export default function QuestionDetail({ postId }) {
-  const [answers, setAnswers] = useState([]);
-  const [newAnswer, setNewAnswer] = useState("");
-
-  useEffect(() => {
-    fetch(`http://localhost:5001/api/answers/${postId}`)
-      .then(res => res.json())
-      .then(data => setAnswers(data));
-  }, [postId]);
-
+export default function QuestionDetail() {
+      const { id: postId } = useParams(); 
+      
+      useEffect(() => {
+          fetch(`http://localhost:5001/api/answers/${postId}`)
+          .then(res => res.json())
+          .then(data => setAnswers(data));
+        }, [postId]);
+        
+        const [answers, setAnswers] = useState([]);
+        const [newAnswer, setNewAnswer] = useState("");
   const submitAnswer = async () => {
     const res = await fetch("http://localhost:5001/api/answer", {
       method: "POST",
