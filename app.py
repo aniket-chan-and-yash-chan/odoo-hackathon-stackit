@@ -21,7 +21,28 @@ CORS(app)
 
 from flask import send_from_directory
 
-
+@app.route("/api/questions")
+def get_questions():
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 5, type=int)
+    query = Post.query.paginate(page=page, per_page=per_page)
+    questions = [
+        {
+            "id": post.id,
+            "title": post.title,
+            "description": post.description,
+            "tags": post.tags,
+            "username": "Anonymous",  # Update later when linking users
+            "answers": 0  # Add later when answers are implemented
+        }
+        for post in query.items
+    ]
+    return jsonify({
+        "questions": questions,
+        "total": query.total,
+        "pages": query.pages,
+        "current_page": query.page
+    })
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)  # Making format for db in which it will save things

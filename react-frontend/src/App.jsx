@@ -3,17 +3,26 @@ import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import {React,useState} from 'react';
+import AskPage from './askpage';
+import Homepage from './Homepage';
 
 
 
 function TopBar() {
+  const isLoggedIn = localStorage.getItem("sessionId") !== null;
+
   return (
     <div className="container-fluid bg-dark text-white py-3 border-bottom border-secondary">
       <div className="d-flex flex-wrap align-items-center justify-content-between gap-2">
 
         {/* Left Section */}
         <div className="d-flex flex-wrap align-items-center gap-2">
-          <button className="btn btn-primary">Ask New Question</button>
+
+  
+                    {isLoggedIn && (
+
+          <Link to="/askpage" className="btn btn-primary">Ask New Question</Link>
+          )}
 
           <div className="dropdown">
             <button
@@ -153,9 +162,7 @@ function Navbar() {
     </nav>
   );
 }
-function Homepage(){
 
-}
 function LoginPage() {
     const [form, setForm] = useState({ email: "", password: "" });
 
@@ -303,9 +310,10 @@ function App() {
       <TopBar />
 
     <Routes>
-      <Route path="/" element={<LoginPage />} />
+      <Route path="/" element={<Homepage />} />
       <Route path="/signup" element={<SignUpPage />} />
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/askpage" element={<AskPage />} />
     </Routes>
     </>
   );
